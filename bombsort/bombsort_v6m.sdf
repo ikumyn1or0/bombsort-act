@@ -1,0 +1,155 @@
+<?xml version="1.0" ?>
+<!-- 元のファイル: AI-Robot-Book-Humble/crane_plus（コミット 19c1d60）の crane_plus_gazebo/worlds/table.sdf（Apache License 2.0）。
+     変えた点: カメラ・壁・陣地・円柱（赤3・黒3）を足した。
+     ロボットの台座は世界座標 (0, 0, 1.015)。 -->
+<sdf version="1.6">
+  <world name="default">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin filename="ignition-gazebo-physics-system" name="ignition::gazebo::systems::Physics"/>
+    <plugin filename="ignition-gazebo-user-commands-system" name="ignition::gazebo::systems::UserCommands"/>
+    <plugin filename="ignition-gazebo-scene-broadcaster-system" name="ignition::gazebo::systems::SceneBroadcaster"/>
+    <plugin filename="ignition-gazebo-sensors-system" name="ignition::gazebo::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <include><uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Sun</uri></include>
+    <include><uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Ground%20Plane</uri></include>
+    <include>
+      <uri>https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Table</uri>
+      <pose>0.29 0 0 0 0 1.5708</pose>
+    </include>
+
+    <!-- 斜めのカメラ：正面 (0.40, 0) の高さ 0.28 m から (0.10, 0) を見下ろす -->
+    <model name="top_camera">
+      <static>true</static>
+      <pose>0.40 0 1.295 0 0.75 3.14159</pose>
+      <link name="link">
+        <sensor name="cam" type="camera">
+          <camera>
+            <horizontal_fov>1.1</horizontal_fov>
+            <image><width>128</width><height>128</height><format>R8G8B8</format></image>
+            <clip><near>0.05</near><far>3</far></clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>15</update_rate>
+          <topic>bs_camera</topic>
+        </sensor>
+      </link>
+    </model>
+
+    <!-- フィールドの壁（x=0.0875〜0.1725, y=±0.0925、高さ 1 cm、見た目だけ） -->
+    <model name="walls">
+      <static>true</static>
+      <pose>0.13 0 1.02 0 0 0</pose>
+      <link name="link">
+        <visual name="n"><pose>0.045 0 0 0 0 0</pose><geometry><box><size>0.005 0.19 0.01</size></box></geometry><material><diffuse>0.6 0.6 0.6 1</diffuse></material></visual>
+        <visual name="s"><pose>-0.045 0 0 0 0 0</pose><geometry><box><size>0.005 0.19 0.01</size></box></geometry><material><diffuse>0.6 0.6 0.6 1</diffuse></material></visual>
+        <visual name="e"><pose>0 0.095 0 0 0 0</pose><geometry><box><size>0.095 0.005 0.01</size></box></geometry><material><diffuse>0.6 0.6 0.6 1</diffuse></material></visual>
+        <visual name="w"><pose>0 -0.095 0 0 0 0</pose><geometry><box><size>0.095 0.005 0.01</size></box></geometry><material><diffuse>0.6 0.6 0.6 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- 陣地（見た目だけ。9 cm 四方） -->
+    <model name="zone_red">
+      <static>true</static>
+      <pose>0.05 0.18 1.0155 0 0 0</pose>
+      <link name="link"><visual name="v"><geometry><box><size>0.09 0.09 0.001</size></box></geometry>
+        <material><ambient>1 0.3 0.3 1</ambient><diffuse>1 0.3 0.3 1</diffuse></material></visual></link>
+    </model>
+    <model name="zone_black">
+      <static>true</static>
+      <pose>0.05 -0.18 1.0155 0 0 0</pose>
+      <link name="link"><visual name="v"><geometry><box><size>0.09 0.09 0.001</size></box></geometry>
+        <material><ambient>0.3 0.3 0.3 1</ambient><diffuse>0.3 0.3 0.3 1</diffuse></material></visual></link>
+    </model>
+
+    <!-- 円柱（直径 2.5 cm、高さ 4 cm、10 g） -->
+    <model name="bomb_red_0">
+      <pose>3.0 -3.0 0.02 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.01</mass><inertia><ixx>2e-6</ixx><iyy>2e-6</iyy><izz>1.1e-6</izz></inertia></inertial>
+        <collision name="c"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.9 0.05 0.05 1</ambient><diffuse>0.9 0.05 0.05 1</diffuse></material></visual>
+      </link>
+      <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose><publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>20</update_frequency>
+      </plugin>
+    </model>
+    <model name="bomb_red_1">
+      <pose>3.1 -3.0 0.02 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.01</mass><inertia><ixx>2e-6</ixx><iyy>2e-6</iyy><izz>1.1e-6</izz></inertia></inertial>
+        <collision name="c"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.9 0.05 0.05 1</ambient><diffuse>0.9 0.05 0.05 1</diffuse></material></visual>
+      </link>
+      <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose><publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>20</update_frequency>
+      </plugin>
+    </model>
+    <model name="bomb_red_2">
+      <pose>3.2 -3.0 0.02 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.01</mass><inertia><ixx>2e-6</ixx><iyy>2e-6</iyy><izz>1.1e-6</izz></inertia></inertial>
+        <collision name="c"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.9 0.05 0.05 1</ambient><diffuse>0.9 0.05 0.05 1</diffuse></material></visual>
+      </link>
+      <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose><publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>20</update_frequency>
+      </plugin>
+    </model>
+    <model name="bomb_black_0">
+      <pose>3.0 3.0 0.02 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.01</mass><inertia><ixx>2e-6</ixx><iyy>2e-6</iyy><izz>1.1e-6</izz></inertia></inertial>
+        <collision name="c"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse></material></visual>
+      </link>
+      <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose><publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>20</update_frequency>
+      </plugin>
+    </model>
+    <model name="bomb_black_1">
+      <pose>3.1 3.0 0.02 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.01</mass><inertia><ixx>2e-6</ixx><iyy>2e-6</iyy><izz>1.1e-6</izz></inertia></inertial>
+        <collision name="c"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse></material></visual>
+      </link>
+      <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose><publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>20</update_frequency>
+      </plugin>
+    </model>
+    <model name="bomb_black_2">
+      <pose>3.2 3.0 0.02 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.01</mass><inertia><ixx>2e-6</ixx><iyy>2e-6</iyy><izz>1.1e-6</izz></inertia></inertial>
+        <collision name="c"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry></collision>
+        <visual name="v"><geometry><cylinder><radius>0.0125</radius><length>0.04</length></cylinder></geometry>
+          <material><ambient>0.05 0.05 0.05 1</ambient><diffuse>0.05 0.05 0.05 1</diffuse></material></visual>
+      </link>
+      <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
+        <publish_link_pose>false</publish_link_pose><publish_model_pose>true</publish_model_pose>
+        <use_pose_vector_msg>false</use_pose_vector_msg>
+        <update_frequency>20</update_frequency>
+      </plugin>
+    </model>
+  </world>
+</sdf>

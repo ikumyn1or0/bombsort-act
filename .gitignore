@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+# スクリプトが実行時に作るもの
+bs/logs/
+bs/results/
+bs/viz/
+bombsort/gazebo.log
+*.mp4
